@@ -1,17 +1,18 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 import { findByLot, appendToB, mergeRow } from "@/lib/sheets";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const PostBody = z.object({
-  "lot no": z.coerce.string().min(1),   // <- coerce
+  "lot no": z.coerce.string().min(1),
   "ürün kodu": z.coerce.string().optional(),
   "raf": z.coerce.string().optional(),
   "metraj": z.coerce.string().optional(),
 });
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     const body = PostBody.parse(await req.json());
     const lotNo = body["lot no"];
@@ -42,7 +43,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, action: "added", data: completed }, { status: 201 });
   } catch (err: any) {
-
     if (err?.issues) {
       const msg = err.issues
         .map((i: any) => (i?.message ? String(i.message) : JSON.stringify(i)))
