@@ -32,12 +32,13 @@ export async function getSheets() {
   return google.sheets({ version: "v4", auth });
 }
 
-function toRowData(values: string[]): RowData {
+function toRowData(values: any[]): RowData {
+  const s = (v: any) => (v === null || v === undefined ? "" : String(v));
   return {
-    "lot no": values[0] ?? "",
-    "ürün kodu": values[1] ?? "",
-    "raf": values[2] ?? "",
-    "metraj": values[3] ?? "",
+    "lot no": s(values[0]),
+    "ürün kodu": s(values[1]),
+    "raf": s(values[2]),
+    "metraj": s(values[3]),
   };
 }
 

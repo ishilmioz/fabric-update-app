@@ -2,14 +2,14 @@ import { NextResponse, NextRequest } from "next/server";
 import { z } from "zod";
 import { findByLot, appendToB, mergeRow } from "@/lib/sheets";
 
-const PostBody = z.object({
-  "lot no": z.string().min(1),
-  "ürün kodu": z.string().optional(),
-  "raf": z.string().optional(),
-  "metraj": z.string().optional(),
-});
-
 export const dynamic = "force-dynamic";
+
+const PostBody = z.object({
+  "lot no": z.coerce.string().min(1),   // <- coerce
+  "ürün kodu": z.coerce.string().optional(),
+  "raf": z.coerce.string().optional(),
+  "metraj": z.coerce.string().optional(),
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,15 +40,17 @@ export async function POST(req: NextRequest) {
 
     await appendToB(completed);
 
-    return NextResponse.json(
-      { ok: true, action: "added", data: completed },
-      { status: 201 }
-    );
+    return NextResponse.json({ ok: true, action: "added", data: completed }, { status: 201 });
   } catch (err: any) {
+
     if (err?.issues) {
-      return NextResponse.json({ error: err.issues }, { status: 400 });
+      const msg = err.issues
+        .map((i: any) => (i?.message ? String(i.message) : JSON.stringify(i)))
+        .join(" | ");
+      return NextResponse.json({ error: msg }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: err.message ?? "Unknown error" }, { status: 500 });
+    const message = typeof err?.message === "string" ? err.message : JSON.stringify(err);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
