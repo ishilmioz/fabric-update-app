@@ -4,7 +4,8 @@
 🇺🇸 [English](#-english)
 
 ## 🇹🇷 Türkçe
-#Kumaş Lot Güncelleme Uygulaması
+
+## Kumaş Lot Güncelleme Uygulaması
 
 Google Sheets’i depo gibi kullanan basit fakat iş akışı net bir **lot yönetim uygulaması**.  
 Kullanıcı, **lot no** girer → Uygulama önce **B** sayfasını arar → varsa **güncelle**, yoksa **A** sayfasına bak → **A**'da varsa **ekle**, hiçbirinde yoksa uyarı verir.
